@@ -1,6 +1,5 @@
 package cinema.dao;
 
-import cinema.dao.impl.MovieSessionDaoImpl;
 import cinema.exception.DataProcessingException;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +27,7 @@ public abstract class AbstractDao<T> {
             transaction = session.beginTransaction();
             session.save(t);
             transaction.commit();
-            LOGGER.info("Added "+ clazz.getSimpleName() + " " + t);
+            LOGGER.info("Added " + clazz.getSimpleName() + " " + t);
             return t;
         } catch (Exception e) {
             if (transaction != null) {
@@ -46,9 +45,9 @@ public abstract class AbstractDao<T> {
 
     public Optional<T> get(Long id) {
         try (Session session = factory.openSession()) {
-            Optional<T> tOptional = Optional.ofNullable(session.get(clazz, id));
+            Optional<T> optional = Optional.ofNullable(session.get(clazz, id));
             LOGGER.info("Got " + clazz.getSimpleName() + ", id: " + id);
-            return tOptional;
+            return optional;
         } catch (Exception e) {
             LOGGER.error("Can't get " + clazz.getSimpleName() + ", id: " + id);
             throw new DataProcessingException("Can't get "
@@ -77,7 +76,7 @@ public abstract class AbstractDao<T> {
             transaction = session.beginTransaction();
             session.update(t);
             transaction.commit();
-            LOGGER.info("Updated "+ clazz.getSimpleName() + " " + t);
+            LOGGER.info("Updated " + clazz.getSimpleName() + " " + t);
             return t;
         } catch (Exception e) {
             if (transaction != null) {

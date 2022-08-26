@@ -28,13 +28,9 @@ class TicketDaoImplTest extends AbstractTest {
 
     @Override
     protected Class<?>[] entities() {
-        return new Class[] {Ticket.class, User.class, MovieSession.class, Movie.class, Role.class};
+        return new Class[] {Ticket.class, User.class, MovieSession.class, Movie.class,
+                Role.class, CinemaHall.class};
     }
-
-    // TODO org.hibernate.AnnotationException: @OneToOne or @ManyToOne on cinema.model.MovieSession.cinemaHall
-    //  references an unknown entity: cinema.model.CinemaHall
-    //  at cinema.dao.impl.AbstractTest.newSessionFactory(AbstractTest.java:61)
-    //  at cinema.dao.impl.AbstractTest.init(AbstractTest.java:42)
 
     @BeforeEach
     void setUp() {

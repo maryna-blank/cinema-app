@@ -3,6 +3,7 @@ package cinema.dao.impl;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,7 +30,6 @@ class MovieSessionDaoImplTest extends AbstractTest {
     private Movie movie;
     private LocalDate localDate;
     private LocalDateTime showTime;
-    private MovieDao movieDao;
     private CinemaHallDao cinemaHallDao;
 
     @Override
@@ -39,7 +39,7 @@ class MovieSessionDaoImplTest extends AbstractTest {
 
     @BeforeEach
     void setUp() {
-        movieDao = new MovieDaoImpl(getSessionFactory());
+        MovieDao movieDao = new MovieDaoImpl(getSessionFactory());
         cinemaHallDao = new CinemaHallDaoImpl(getSessionFactory());
         movieSessionDao = new MovieSessionDaoImpl(getSessionFactory());
         movie = new Movie("Harry Potter", "Fantasy");
@@ -58,11 +58,11 @@ class MovieSessionDaoImplTest extends AbstractTest {
     @Test
     void findAvailableSessions_Ok() {
         List<MovieSession> sessions = movieSessionDao.findAvailableSessions(movie.getId(), localDate);
-        // TODO [main] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper -
-        //  user lacks privilege or object not found: DATE_FORMAT in statement [select moviesessi0_.id as id1_1_,
-        //  moviesessi0_.cinema_hall_id as cinema_h3_1_, moviesessi0_.movie_id as movie_id4_1_, moviesessi0_.show_time
-        //  as show_tim2_1_ from movie_sessions moviesessi0_ where moviesessi0_.movie_id=? and
-        //  DATE_FORMAT(moviesessi0_.show_time,'%Y-%m-%d')=?]
+        // TODO 14:38:12.251 [main] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - user lacks privilege or
+        // object not found: DATE_FORMAT in statement [select moviesessi0_.id as id1_1_, moviesessi0_.cinema_hall_id
+        // as cinema_h3_1_, moviesessi0_.movie_id as movie_id4_1_, moviesessi0_.show_time as show_tim2_1_
+        // from movie_sessions moviesessi0_ where moviesessi0_.movie_id=? and DATE_FORMAT(moviesessi0_.show_time,'%Y-%m-%d')=?]
+        // TODO cinema.exception.DataProcessingException: Session for movie with id 1 and show date 2022-08-26 not found
         assertFalse(sessions.isEmpty());
         assertTrue(sessions.contains(movieSession));
         MovieSession actual = sessions.get(Math.toIntExact(movieSession.getId()));
@@ -71,21 +71,18 @@ class MovieSessionDaoImplTest extends AbstractTest {
 
     @Test
     void findAvailableSessions_WrongDay_NotOk() {
-        List<MovieSession> sessions = movieSessionDao.findAvailableSessions(movie.getId(),
-                localDate.plusDays(2L));
-        assertTrue(sessions.isEmpty());
+        assertThrows(DataProcessingException.class, () -> movieSessionDao.findAvailableSessions(movie.getId(),
+                localDate.plusDays(2L)));
     }
 
     @Test
     void findAvailableSessions_NonExistentMovie_NotOk() {
-        List<MovieSession> sessions = movieSessionDao.findAvailableSessions(58L, localDate);
-        assertTrue(sessions.isEmpty());
+        assertThrows(DataProcessingException.class, () -> movieSessionDao.findAvailableSessions(58L, localDate));
     }
 
     @Test
     void findAvailableSessions_Null_NotOk() {
-        List<MovieSession> sessions = movieSessionDao.findAvailableSessions(null, null);
-        assertTrue(sessions.isEmpty());
+        assertThrows(DataProcessingException.class, () -> movieSessionDao.findAvailableSessions(null, null));
     }
 
     @Test
@@ -97,6 +94,9 @@ class MovieSessionDaoImplTest extends AbstractTest {
         MovieSession actual = movieSessionDao.get(expected.getId()).get();
         assertNotNull(actual);
         assertEquals(expected, actual);
+        // TODO AssertionFailedError (problem with milliseconds)
+        // Expected :MovieSession{id=2, movie=Movie{id=1, title='Harry Potter', description='Fantasy'}, cinemaHall=null, showTime=2022-08-26T14:53:11.367867800}
+        // Actual   :MovieSession{id=2, movie=Movie{id=1, title='Harry Potter', description='Fantasy'}, cinemaHall=null, showTime=2022-08-26T14:53:11.367867}
     }
 
     @Test
@@ -109,6 +109,7 @@ class MovieSessionDaoImplTest extends AbstractTest {
         Optional<MovieSession> optionalMovieSession = movieSessionDao.get(movieSession.getId());
         assertFalse(optionalMovieSession.isEmpty());
         assertEquals(movieSession, optionalMovieSession.get());
+        // TODO AssertionFailedError (problem with milliseconds)
     }
 
     @Test
@@ -123,16 +124,13 @@ class MovieSessionDaoImplTest extends AbstractTest {
 
     @Test
     void update_Ok() {
-        Movie newMovie = new Movie("The Lord of the Rings", "Fantasy");
-        movieDao.add(newMovie);
         CinemaHall newCinemaHall = new CinemaHall(100, "Loki");
         cinemaHallDao.add(newCinemaHall);
-        movieSession.setMovie(newMovie);
-        movieSession.setShowTime(LocalDateTime.now());
         movieSession.setCinemaHall(newCinemaHall);
         MovieSession actual = movieSessionDao.update(movieSession);
-        assertDoesNotThrow(() -> movieSessionDao.update(movieSession));
         assertNotNull(actual);
+        assertNotEquals(movieSession, actual);
+        // todo why AssertionFailedError
     }
 
     @Test
