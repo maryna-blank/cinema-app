@@ -2,9 +2,9 @@ package cinema.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,9 +25,9 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "ticket_id"))
     private List<Ticket> tickets;
-    @Column(name = "order_date")
-    private LocalDateTime orderDate;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "order_time")
+    private LocalDateTime orderTime;
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -47,12 +47,12 @@ public class Order {
         this.tickets = tickets;
     }
 
-    public LocalDateTime getOrderDate() {
-        return orderDate;
+    public LocalDateTime getOrderTime() {
+        return orderTime;
     }
 
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
+    public void setOrderTime(LocalDateTime orderTime) {
+        this.orderTime = orderTime;
     }
 
     public User getUser() {
@@ -64,12 +64,31 @@ public class Order {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Order order = (Order) o;
+        return Objects.equals(id, order.id)
+                && Objects.equals(tickets, order.tickets)
+                && Objects.equals(orderTime, order.orderTime)
+                && Objects.equals(user, order.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tickets, orderTime, user);
+    }
+
+    @Override
     public String toString() {
         return "Order{"
                 + "id=" + id
                 + ", tickets=" + tickets
-                + ", orderDate=" + orderDate
-                + ", user=" + user
-                + '}';
+                + ", orderTime=" + orderTime
+                + ", user=" + user + '}';
     }
 }

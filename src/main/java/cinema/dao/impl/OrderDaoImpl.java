@@ -1,63 +1,43 @@
 package cinema.dao.impl;
 
+import cinema.dao.AbstractDao;
 import cinema.dao.OrderDao;
 import cinema.exception.DataProcessingException;
-import cinema.lib.Dao;
 import cinema.model.Order;
 import cinema.model.User;
-import cinema.util.HibernateUtil;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
-@Dao
-public class OrderDaoImpl implements OrderDao {
+@Repository
+public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
     private static final Logger LOGGER = LogManager.getLogger(OrderDaoImpl.class);
 
-    @Override
-    public Order add(Order order) {
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
-            session.save(order);
-            transaction.commit();
-            LOGGER.info("An order was created. Params: order={}", order);
-            return order;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            LOGGER.error("Couldn't create an order. Params: order={}", order);
-            throw new DataProcessingException("Can`t insert an order " + order, e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+    public OrderDaoImpl(SessionFactory factory) {
+        super(factory, Order.class);
     }
 
     @Override
-    public List<Order> getByUser(User user) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Order> orderQuery = session.createQuery("FROM Order o "
-                    + "LEFT JOIN FETCH o.user "
-                    + "LEFT JOIN FETCH o.tickets t "
-                    + "LEFT JOIN FETCH t.user "
-                    + "LEFT JOIN FETCH t.movieSession m "
-                    + "LEFT JOIN FETCH m.movie "
-                    + "LEFT JOIN FETCH m.cinemaHall "
-                    + "WHERE o.user = :user", Order.class);
-            orderQuery.setParameter("user", user);
-            LOGGER.info("Got orders for user. Params: user={}", user);
-            return orderQuery.getResultList();
+    public List<Order> getOrdersHistory(User user) {
+        try (Session session = factory.openSession()) {
+            Query<Order> getByUser = session.createQuery(
+                    "SELECT DISTINCT o FROM Order o "
+                            + "join fetch o.tickets t "
+                            + "join fetch t.movieSession ms "
+                            + "join fetch ms.cinemaHall "
+                            + "join fetch ms.movie "
+                            + "WHERE o.user = :user", Order.class);
+            getByUser.setParameter("user", user);
+            List<Order> orders = getByUser.getResultList();
+            LOGGER.info("Got orders history, user:{}", user);
+            return orders;
         } catch (Exception e) {
-            LOGGER.error("Couldn't get orders for user. Params: user={}", user);
-            throw new DataProcessingException("Can't get order by user " + user, e);
+            LOGGER.error("Can't get orders history, user:{}", user);
+            throw new DataProcessingException("Can't get orders history for user " + user, e);
         }
     }
 }

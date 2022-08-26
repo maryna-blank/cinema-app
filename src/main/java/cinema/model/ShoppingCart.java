@@ -1,6 +1,7 @@
 package cinema.model;
 
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -11,7 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table (name = "shopping_carts")
+@Table(name = "shopping_carts")
 public class ShoppingCart {
     @Id
     private Long id;
@@ -20,8 +21,8 @@ public class ShoppingCart {
             joinColumns = @JoinColumn(name = "shopping_cart_id"),
             inverseJoinColumns = @JoinColumn(name = "ticket_id"))
     private List<Ticket> tickets;
-    @OneToOne
     @MapsId
+    @OneToOne
     @JoinColumn(name = "id")
     private User user;
 
@@ -50,11 +51,29 @@ public class ShoppingCart {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ShoppingCart that = (ShoppingCart) o;
+        return Objects.equals(id, that.id)
+                && Objects.equals(tickets, that.tickets)
+                && Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tickets, user);
+    }
+
+    @Override
     public String toString() {
         return "ShoppingCart{"
-            + "id=" + id
-            + ", tickets=" + tickets
-            + ", user=" + user
-            + '}';
+                + "id=" + id
+                + ", tickets=" + tickets
+                + ", user=" + user + '}';
     }
 }
