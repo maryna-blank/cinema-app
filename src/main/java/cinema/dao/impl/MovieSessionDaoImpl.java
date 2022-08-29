@@ -5,6 +5,7 @@ import cinema.dao.MovieSessionDao;
 import cinema.exception.DataProcessingException;
 import cinema.model.MovieSession;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,9 +27,10 @@ public class MovieSessionDaoImpl extends AbstractDao<MovieSession> implements Mo
         try (Session session = factory.openSession()) {
             Query<MovieSession> getAvailableSessions = session.createQuery(
                     "FROM MovieSession m WHERE m.movie.id = :id "
-                            + "AND TO_DATE(showTime, 'YYYY-MM-DD') = :date", MovieSession.class);
+                            + "AND m.showTime BETWEEN :startTime AND :endTime", MovieSession.class);
             getAvailableSessions.setParameter("id", movieId);
-            getAvailableSessions.setParameter("date", date.toString());
+            getAvailableSessions.setParameter("startTime", date.atTime(LocalTime.MIN).toString());
+            getAvailableSessions.setParameter("endTime", date.atTime(LocalTime.MAX).toString());
             List<MovieSession> sessions = getAvailableSessions.getResultList();
             LOGGER.info("Found available movie sessions, id:{}, date:{}",
                     movieId, date);
