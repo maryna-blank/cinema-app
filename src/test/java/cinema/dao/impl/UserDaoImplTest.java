@@ -49,8 +49,6 @@ class UserDaoImplTest extends AbstractTest {
         User actual = userDao.get(expected.getId()).get();
         assertNotNull(actual);
         assertEquals(expected, actual);
-        // TODO LazyInitializationException: failed to lazily initialize a collection
-        // of role: cinema.model.User.roles, could not initialize proxy - no Session
     }
 
     @Test
@@ -63,8 +61,6 @@ class UserDaoImplTest extends AbstractTest {
         Optional<User> userOptional = userDao.get(user.getId());
         assertFalse(userOptional.isEmpty());
         assertEquals(user, userOptional.get());
-        // TODO LazyInitializationException: failed to lazily initialize a collection
-        // of role: cinema.model.User.roles, could not initialize proxy - no Session
     }
 
     @Test

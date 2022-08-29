@@ -83,7 +83,7 @@ class OrderDaoImplTest extends AbstractTest {
         List<Order> ordersHistory = orderDao.getOrdersHistory(user);
         assertFalse(ordersHistory.isEmpty());
         assertTrue(ordersHistory.contains(order));
-        // TODO Expected :true Actual :false
+        // TODO AssertionFailedError
     }
 
     @Test
@@ -96,7 +96,7 @@ class OrderDaoImplTest extends AbstractTest {
         List<Order> ordersHistory = orderDao.getOrdersHistory(user);
         assertFalse(ordersHistory.isEmpty());
         assertTrue(ordersHistory.contains(order));
-        // TODO Expected :true Actual :false
+        // TODO AssertionFailedError
     }
 
     @Test

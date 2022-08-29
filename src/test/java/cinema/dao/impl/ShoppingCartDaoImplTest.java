@@ -20,8 +20,9 @@ import cinema.model.Role;
 import cinema.model.ShoppingCart;
 import cinema.model.Ticket;
 import cinema.model.User;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -66,7 +67,7 @@ class ShoppingCartDaoImplTest extends AbstractTest {
         movieSession = new MovieSession();
         movieSession.setCinemaHall(cinemaHall);
         movieSession.setMovie(movie);
-        movieSession.setShowTime(LocalDateTime.now().plusHours(2));
+        movieSession.setShowTime(LocalDateTime.of(LocalDate.now(), LocalTime.NOON));
         movieSessionDao.add(movieSession);
         Ticket ticket = new Ticket();
         ticket.setUser(user);
@@ -96,7 +97,7 @@ class ShoppingCartDaoImplTest extends AbstractTest {
         ShoppingCart actual = shoppingCartDao.getByUser(newUser);
         assertNotNull(actual);
         assertEquals(expected, actual);
-        // TODO LazyInitializationException
+        // TODO AssertionFailedError
     }
 
     @Test
@@ -109,7 +110,7 @@ class ShoppingCartDaoImplTest extends AbstractTest {
         ShoppingCart actual = shoppingCartDao.getByUser(user);
         assertNotNull(actual);
         assertEquals(shoppingCart, actual);
-        // TODO LazyInitializationException
+        // TODO AssertionFailedError
     }
 
     @Test
@@ -124,6 +125,7 @@ class ShoppingCartDaoImplTest extends AbstractTest {
 
     @Test
     void update_Ok() {
+        // todo equals or not?
         Ticket newTicket = new Ticket();
         newTicket.setMovieSession(movieSession);
         newTicket.setUser(user);

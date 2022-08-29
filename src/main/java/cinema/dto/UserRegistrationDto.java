@@ -1,9 +1,17 @@
 package cinema.dto;
 
+import cinema.validation.Email;
+import cinema.validation.Password;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+@Password(
+        field = "password",
+        fieldMatch = "repeatPassword",
+        message = "Passwords do not match!"
+)
 public class UserRegistrationDto {
+    @Email
     private String email;
     @NotEmpty(message = "The password couldn't be empty")
     @Size(min = 8, message = "Password must be at least 8 symbols long")
