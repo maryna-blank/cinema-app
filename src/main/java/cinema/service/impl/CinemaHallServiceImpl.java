@@ -16,11 +16,17 @@ public class CinemaHallServiceImpl implements CinemaHallService {
 
     @Override
     public CinemaHall add(CinemaHall cinemaHall) {
+        if (cinemaHall == null) {
+            throw new RuntimeException("Cinema Hall can't be null");
+        }
         return cinemaHallDao.add(cinemaHall);
     }
 
     @Override
     public CinemaHall get(Long id) {
+        if (id == null) {
+            throw new RuntimeException("ID can't be null");
+        }
         return cinemaHallDao.get(id).orElseThrow(
                 () -> new RuntimeException("Can't get cinema hall by id " + id));
     }

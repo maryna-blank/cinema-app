@@ -1,7 +1,6 @@
 package cinema.dao.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -97,7 +96,6 @@ class ShoppingCartDaoImplTest extends AbstractTest {
         ShoppingCart actual = shoppingCartDao.getByUser(newUser);
         assertNotNull(actual);
         assertEquals(expected, actual);
-        // TODO AssertionFailedError
     }
 
     @Test
@@ -110,7 +108,6 @@ class ShoppingCartDaoImplTest extends AbstractTest {
         ShoppingCart actual = shoppingCartDao.getByUser(user);
         assertNotNull(actual);
         assertEquals(shoppingCart, actual);
-        // TODO AssertionFailedError
     }
 
     @Test
@@ -125,7 +122,6 @@ class ShoppingCartDaoImplTest extends AbstractTest {
 
     @Test
     void update_Ok() {
-        // todo equals or not?
         Ticket newTicket = new Ticket();
         newTicket.setMovieSession(movieSession);
         newTicket.setUser(user);
@@ -134,7 +130,7 @@ class ShoppingCartDaoImplTest extends AbstractTest {
         shoppingCartDao.update(shoppingCart);
         ShoppingCart byUser = shoppingCartDao.getByUser(user);
         assertNotNull(byUser);
-        assertNotEquals(shoppingCart, byUser);
+        assertEquals(shoppingCart, byUser);
     }
 
     @Test

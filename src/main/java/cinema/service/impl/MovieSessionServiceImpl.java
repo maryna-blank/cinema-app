@@ -17,11 +17,17 @@ public class MovieSessionServiceImpl implements MovieSessionService {
 
     @Override
     public List<MovieSession> findAvailableSessions(Long movieId, LocalDate date) {
+        if (movieId == null || date == null) {
+            throw new RuntimeException("Movie id and date can't be null");
+        }
         return movieSessionDao.findAvailableSessions(movieId, date);
     }
 
     @Override
     public MovieSession add(MovieSession session) {
+        if (session == null) {
+            throw new RuntimeException("Session can't be null");
+        }
         return movieSessionDao.add(session);
     }
 
@@ -33,11 +39,17 @@ public class MovieSessionServiceImpl implements MovieSessionService {
 
     @Override
     public MovieSession update(MovieSession movieSession) {
+        if (movieSession == null || movieSession.getId() == null) {
+            throw new RuntimeException("There's no such a session: " + movieSession);
+        }
         return movieSessionDao.update(movieSession);
     }
 
     @Override
     public void delete(Long id) {
+        if (id == null) {
+            throw new RuntimeException("ID can't be null");
+        }
         movieSessionDao.delete(id);
     }
 }

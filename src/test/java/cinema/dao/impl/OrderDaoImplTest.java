@@ -19,7 +19,9 @@ import cinema.model.Order;
 import cinema.model.Role;
 import cinema.model.Ticket;
 import cinema.model.User;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -54,7 +56,7 @@ class OrderDaoImplTest extends AbstractTest {
         MovieSession movieSession = new MovieSession();
         movieSession.setCinemaHall(cinemaHall);
         movieSession.setMovie(movie);
-        movieSession.setShowTime(LocalDateTime.now().plusHours(2));
+        movieSession.setShowTime(LocalDateTime.of(LocalDate.now(), LocalTime.NOON));
         movieSessionDao.add(movieSession);
         RoleDao roleDao = new RoleDaoImpl(getSessionFactory());
         roleDao.add(new Role(Role.RoleName.USER));
@@ -70,7 +72,7 @@ class OrderDaoImplTest extends AbstractTest {
         ticketDao.add(ticket);
         List<Ticket> tickets = new ArrayList<>();
         tickets.add(ticket);
-        LocalDateTime orderTime = LocalDateTime.now();
+        LocalDateTime orderTime = LocalDateTime.of(LocalDate.now(), LocalTime.NOON.minusMinutes(30));
         order = new Order();
         order.setOrderTime(orderTime);
         order.setTickets(tickets);
@@ -83,7 +85,6 @@ class OrderDaoImplTest extends AbstractTest {
         List<Order> ordersHistory = orderDao.getOrdersHistory(user);
         assertFalse(ordersHistory.isEmpty());
         assertTrue(ordersHistory.contains(order));
-        // TODO AssertionFailedError
     }
 
     @Test
@@ -96,7 +97,6 @@ class OrderDaoImplTest extends AbstractTest {
         List<Order> ordersHistory = orderDao.getOrdersHistory(user);
         assertFalse(ordersHistory.isEmpty());
         assertTrue(ordersHistory.contains(order));
-        // TODO AssertionFailedError
     }
 
     @Test

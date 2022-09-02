@@ -15,11 +15,17 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role add(Role role) {
+        if (role == null) {
+            throw new RuntimeException("Role can't be null");
+        }
         return roleDao.add(role);
     }
 
     @Override
     public Role getByName(String roleName) {
+        if (roleName == null || roleDao.getByName(roleName) == null) {
+            throw new RuntimeException("There's no such role name " + roleName);
+        }
         return roleDao.getByName(roleName);
     }
 }

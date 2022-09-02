@@ -56,22 +56,21 @@ class MovieSessionDaoImplTest extends AbstractTest {
     @Test
     void findAvailableSessions_Ok() {
         List<MovieSession> sessions = movieSessionDao.findAvailableSessions(movie.getId(), localDate);
-        // TODO AssertionFailedError
-        assertFalse(sessions.isEmpty()); // why is it true?
+        assertFalse(sessions.isEmpty());
         assertTrue(sessions.contains(movieSession));
-        MovieSession actual = sessions.get(Math.toIntExact(movieSession.getId()));
+        MovieSession actual = sessions.get(0);
         assertEquals(movieSession, actual);
     }
 
     @Test
     void findAvailableSessions_WrongDay_NotOk() {
-        assertThrows(DataProcessingException.class, () -> movieSessionDao.findAvailableSessions(movie.getId(),
-                localDate.plusDays(2L)));
+        assertTrue(movieSessionDao.findAvailableSessions(movie.getId(),
+                localDate.plusDays(2L)).isEmpty());
     }
 
     @Test
     void findAvailableSessions_NonExistentMovie_NotOk() {
-        assertThrows(DataProcessingException.class, () -> movieSessionDao.findAvailableSessions(58L, localDate));
+        assertTrue(movieSessionDao.findAvailableSessions(58L, localDate).isEmpty());
     }
 
     @Test

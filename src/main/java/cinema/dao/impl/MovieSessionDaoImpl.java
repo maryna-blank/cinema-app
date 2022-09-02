@@ -29,8 +29,8 @@ public class MovieSessionDaoImpl extends AbstractDao<MovieSession> implements Mo
                     "FROM MovieSession m WHERE m.movie.id = :id "
                             + "AND m.showTime BETWEEN :startTime AND :endTime", MovieSession.class);
             getAvailableSessions.setParameter("id", movieId);
-            getAvailableSessions.setParameter("startTime", date.atTime(LocalTime.MIN).toString());
-            getAvailableSessions.setParameter("endTime", date.atTime(LocalTime.MAX).toString());
+            getAvailableSessions.setParameter("startTime", date.atTime(LocalTime.MIN));
+            getAvailableSessions.setParameter("endTime", date.atTime(LocalTime.MAX));
             List<MovieSession> sessions = getAvailableSessions.getResultList();
             LOGGER.info("Found available movie sessions, id:{}, date:{}",
                     movieId, date);

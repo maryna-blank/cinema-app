@@ -60,7 +60,7 @@ public class ShoppingCart {
         }
         ShoppingCart that = (ShoppingCart) o;
         return Objects.equals(id, that.id)
-                && Objects.equals(tickets, that.tickets)
+                && tickets != null && tickets.containsAll(that.tickets)
                 && Objects.equals(user, that.user);
     }
 

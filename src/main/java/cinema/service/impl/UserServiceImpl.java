@@ -19,6 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User add(User user) {
+        if (user == null) {
+            throw new RuntimeException("User can't be null");
+        }
         user.setPassword(encoder.encode(user.getPassword()));
         return userDao.add(user);
     }

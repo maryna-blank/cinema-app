@@ -22,6 +22,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order completeOrder(ShoppingCart shoppingCart) {
+        if (shoppingCart == null || shoppingCart.getId() == null) {
+            throw new RuntimeException("There's no such a shopping cart: " + shoppingCart);
+        }
         Order order = new Order();
         order.setOrderTime(LocalDateTime.now());
         order.setTickets(shoppingCart.getTickets());
@@ -33,6 +36,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrdersHistory(User user) {
+        if (user == null || user.getId() == null) {
+            throw new RuntimeException("There's no such a user: " + user);
+        }
         return orderDao.getOrdersHistory(user);
     }
 }

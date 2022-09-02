@@ -73,7 +73,7 @@ public class Order {
         }
         Order order = (Order) o;
         return Objects.equals(id, order.id)
-                && Objects.equals(tickets, order.tickets)
+                && tickets != null && tickets.containsAll(order.tickets)
                 && Objects.equals(orderTime, order.orderTime)
                 && Objects.equals(user, order.user);
     }
